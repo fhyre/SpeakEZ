@@ -1,0 +1,23 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-speakez-dev-185219-authRole",
+      "UnauthRoleArn": "arn:aws:iam::619432130683:role/amplify-speakez-dev-185219-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::619432130683:role/amplify-speakez-dev-185219-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-speakez-dev-185219-deployment",
+      "UnauthRoleName": "amplify-speakez-dev-185219-unauthRole",
+      "StackName": "amplify-speakez-dev-185219",
+      "StackId": "arn:aws:cloudformation:us-east-1:619432130683:stack/amplify-speakez-dev-185219/96f80ae0-cdef-11ee-9e89-0a4c933c1b13",
+      "AmplifyAppId": "dfos6l7zdgitt"
+    },
+    "categories": {
+      "auth": {
+        "speakez09ceca82": {}
+      },
+      "function": {
+        "chimeVCHandler": {}
+      }
+    }
+  }
+}
