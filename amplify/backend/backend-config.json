@@ -18,7 +18,7 @@
     }
   },
   "auth": {
-    "speakez09ceca82": {
+    "speakez60674678": {
       "customAuth": false,
       "dependsOn": [],
       "frontendAuthConfig": {
@@ -34,9 +34,7 @@
           "EMAIL"
         ],
         "socialProviders": [],
-        "usernameAttributes": [
-          "EMAIL"
-        ],
+        "usernameAttributes": [],
         "verificationMechanisms": [
           "EMAIL"
         ]
@@ -50,6 +48,47 @@
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
+    }
+  },
+  "hosting": {
+    "amplifyhosting": {
+      "providerPlugin": "awscloudformation",
+      "service": "amplifyhosting",
+      "type": "manual"
+    }
+  },
+  "parameters": {
+    "AMPLIFY_function_chimeVCHandler_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "chimeVCHandler"
+        }
+      ]
+    },
+    "AMPLIFY_function_chimeVCHandler_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "chimeVCHandler"
+        }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_appId": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
+        }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_type": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
+        }
+      ]
     }
   }
 }

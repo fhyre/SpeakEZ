@@ -1,22 +1,24 @@
-import { Avatar, Box, IconButton, Typography } from "@mui/material";
+import { Avatar, Box, IconButton, Typography } from '@mui/material';
 import {
   ConsoleLogger,
   DefaultDeviceController,
   DefaultMeetingSession,
   LogLevel,
   MeetingSessionConfiguration,
-} from "amazon-chime-sdk-js";
-import { useContext, useEffect, useRef, useState } from "react";
-import { API, graphqlOperation } from "aws-amplify";
-import { addAttendee, createMeeting, getMeeting } from "../graphql/mutations";
-import { colors } from "../styles/colors";
-import { UserValContext } from "../context/UserProvider";
-import { updateChatroom } from "../graphql/mutations";
-import CallEndIcon from "@mui/icons-material/CallEnd";
-import MicIcon from "@mui/icons-material/Mic";
-import MicOffIcon from "@mui/icons-material/MicOff";
+} from 'amazon-chime-sdk-js';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { addAttendee, createMeeting, getMeeting } from '../graphql/mutations';
+import { colors } from '../styles/colors';
+import { UserValContext } from '../context/UserProvider';
+import { updateChatroom } from '../graphql/mutations';
+import CallEndIcon from '@mui/icons-material/CallEnd';
+import MicIcon from '@mui/icons-material/Mic';
+import MicOffIcon from '@mui/icons-material/MicOff';
 
 export const Call = ({ close }) => {
+  const API = Amplify.API;
+  const graphqlOperation = Amplify.graphqlOperation;
+
   const { user, chatrooms, chatIndex } = useContext(UserValContext);
   const [meetingSession, setMeetingSession] = useState();
   const [attendees, setAttendees] = useState([]);
@@ -44,7 +46,7 @@ export const Call = ({ close }) => {
 
       const config = new MeetingSessionConfiguration(meetingData, attendeeData);
 
-      const logger = new ConsoleLogger("chat-logger", LogLevel.OFF);
+      const logger = new ConsoleLogger('chat-logger', LogLevel.OFF);
       const deviceController = new DefaultDeviceController(logger);
 
       const sesh = new DefaultMeetingSession(config, logger, deviceController);
@@ -54,7 +56,7 @@ export const Call = ({ close }) => {
 
     const spawnMeeting = async () => {
       const meetingRes = await API.graphql(
-        graphqlOperation(createMeeting, { region: "us-east-1" })
+        graphqlOperation(createMeeting, { region: 'us-east-1' })
       );
       const meetingData = JSON.parse(
         meetingRes.data.createMeeting.body
@@ -168,31 +170,31 @@ export const Call = ({ close }) => {
 
   useEffect(() => {
     const inst = dragRef.current;
-    containerRef.current.style.height = "500px";
+    containerRef.current.style.height = '500px';
     let pos;
 
     const mouseDown = (e) => {
       pos = e.y;
-      window.addEventListener("mousemove", resize);
+      window.addEventListener('mousemove', resize);
     };
 
     const mouseUp = () => {
-      window.removeEventListener("mousemove", resize);
+      window.removeEventListener('mousemove', resize);
     };
 
     const resize = (e) => {
       const diff = e.y - pos;
       pos = e.y;
       containerRef.current.style.height =
-        parseInt(containerRef.current.style.height) + diff * 6 + "px";
+        parseInt(containerRef.current.style.height) + diff * 6 + 'px';
     };
 
-    inst.addEventListener("mousedown", mouseDown);
-    window.addEventListener("mouseup", mouseUp);
+    inst.addEventListener('mousedown', mouseDown);
+    window.addEventListener('mouseup', mouseUp);
 
     return () => {
-      inst.removeEventListener("mousedown", mouseDown);
-      window.removeEventListener("mouseup", mouseUp);
+      inst.removeEventListener('mousedown', mouseDown);
+      window.removeEventListener('mouseup', mouseUp);
     };
   }, [dragRef, containerRef]);
 
@@ -211,23 +213,23 @@ export const Call = ({ close }) => {
       <Box
         sx={{
           backgroundColor: colors.darkPurpleBase,
-          width: "100%",
-          minHeight: "30%",
-          position: "relative",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
+          width: '100%',
+          minHeight: '30%',
+          position: 'relative',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
         }}
         ref={containerRef}
       >
-        <audio ref={outRef} style={{ display: "none" }} />
+        <audio ref={outRef} style={{ display: 'none' }} />
         <Box
           sx={{
-            display: "flex",
-            justifyContent: "space-around",
-            alignItems: "center",
-            height: "100%",
-            width: "40%",
+            display: 'flex',
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            height: '100%',
+            width: '40%',
           }}
         >
           {attendees.length > 0 &&
@@ -235,9 +237,9 @@ export const Call = ({ close }) => {
               return (
                 <Box
                   sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
                   }}
                   key={attendee}
                 >
@@ -247,8 +249,8 @@ export const Call = ({ close }) => {
                       width: 75,
                       border: `3px solid ${
                         volLevel.at(i) && volLevel.at(i) > 0.2
-                          ? "#10cc45"
-                          : "transparent"
+                          ? '#10cc45'
+                          : 'transparent'
                       }`,
                     }}
                   />
@@ -261,19 +263,19 @@ export const Call = ({ close }) => {
         </Box>
         <Box
           sx={{
-            position: "absolute",
+            position: 'absolute',
             bottom: 0,
           }}
         >
           <IconButton
             sx={{
-              backgroundColor: micOff ? "white" : colors.gray,
-              color: micOff ? "black" : "white",
+              backgroundColor: micOff ? 'white' : colors.gray,
+              color: micOff ? 'black' : 'white',
               m: 1,
               width: 45,
               height: 45,
-              "&:hover": {
-                backgroundColor: micOff ? "white" : colors.gray,
+              '&:hover': {
+                backgroundColor: micOff ? 'white' : colors.gray,
               },
             }}
             onClick={handleMute}
@@ -282,13 +284,13 @@ export const Call = ({ close }) => {
           </IconButton>
           <IconButton
             sx={{
-              backgroundColor: "red",
-              color: "white",
+              backgroundColor: 'red',
+              color: 'white',
               m: 1,
               width: 45,
               height: 45,
-              "&:hover": {
-                backgroundColor: "red",
+              '&:hover': {
+                backgroundColor: 'red',
               },
             }}
             onClick={close}
@@ -300,10 +302,10 @@ export const Call = ({ close }) => {
       <Box
         ref={dragRef}
         sx={{
-          height: "5px",
-          width: "100%",
-          position: "relative",
-          cursor: "ns-resize",
+          height: '5px',
+          width: '100%',
+          position: 'relative',
+          cursor: 'ns-resize',
         }}
       />
     </>

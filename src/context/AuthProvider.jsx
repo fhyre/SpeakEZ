@@ -1,5 +1,5 @@
-import { Auth } from "aws-amplify";
-import { createContext, useEffect, useState } from "react";
+import { getCurrentUser } from 'aws-amplify/auth';
+import { createContext, useEffect, useState } from 'react';
 
 export const AuthContext = createContext();
 
@@ -8,17 +8,16 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState(null);
 
-  const checkAuth = () => {
-    Auth.currentAuthenticatedUser()
-      .then((user) => {
-        setIsAuth(true);
-        setUsername(user.username);
-        setLoading(false);
-      })
-      .catch(() => {
-        setIsAuth(false);
-        setLoading(false);
-      });
+  const checkAuth = async () => {
+    try {
+      const user = await getCurrentUser();
+      setIsAuth(true);
+      setUsername(user.username);
+      setLoading(false);
+    } catch (_) {
+      setIsAuth(false);
+      setLoading(false);
+    }
   };
 
   useEffect(() => {

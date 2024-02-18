@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -7,23 +7,24 @@ import {
   InputBase,
   Modal,
   Typography,
-} from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import SearchIcon from "@mui/icons-material/Search";
-import { colors } from "../styles/colors";
-import { API, graphqlOperation } from "aws-amplify";
-import { createChatroom, createUserCR } from "../graphql/mutations";
-import { UserValContext, UserModifyContext } from "../context/UserProvider";
-import { listUserCRS } from "../graphql/queries";
-import { ErrorSnack } from "./ErrorSnack";
+} from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
+import SearchIcon from '@mui/icons-material/Search';
+import { colors } from '../styles/colors';
+import { generateClient } from 'aws-amplify/api';
+import { createChatroom, createUserCR } from '../graphql/mutations';
+import { UserValContext, UserModifyContext } from '../context/UserProvider';
+import { listUserCRS } from '../graphql/queries';
+import { ErrorSnack } from './ErrorSnack';
 
 export default function Chats() {
+  const client = generateClient();
   const { user, chatrooms, allUsers, chatIndex } = useContext(UserValContext);
   const { setChatIndex } = useContext(UserModifyContext);
 
   const [open, setOpen] = useState(false);
   const [currUsers, setCurrUsers] = useState(allUsers);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [disabled, setDisabled] = useState({});
 
   const handleOpen = () => setOpen(true);
@@ -46,40 +47,45 @@ export default function Chats() {
 
       const res =
         chatIds.length > 0 &&
-        (await API.graphql(
-          graphqlOperation(listUserCRS, {
+        (await client.graphql({
+          query: listUserCRS,
+          variables: {
             filter: {
               or: chatIds,
               and: [{ userId: { eq: altUser.id } }],
             },
-          })
-        ));
+          },
+        }));
 
       const chatExists =
         chatIds.length === 0 ? false : res.data.listUserCRS.items.length > 0;
 
       if (chatExists) {
-        setError("Chat between user already exists");
+        setError('Chat between user already exists');
       } else {
         setDisabled((curr) => ({ ...curr, [i]: true }));
 
-        const chatroom = await API.graphql(
-          graphqlOperation(createChatroom, { input: {} })
-        );
+        const chatroom = await client.graphql({
+          query: createChatroom,
+          variables: { input: {} },
+        });
 
         const chatId = chatroom.data.createChatroom.id;
 
-        await API.graphql(
-          graphqlOperation(createUserCR, {
-            input: { userId: user.id, chatroomId: chatId },
-          })
-        );
+        await client.graphql({
+          query: createUserCR,
+          variables: { input: { userId: user.id, chatroomId: chatId } },
+        });
 
-        await API.graphql(
-          graphqlOperation(createUserCR, {
-            input: { userId: altUser.id, chatroomId: chatId },
-          })
-        );
+        await client.graphql({
+          query: createUserCR,
+          variables: {
+            input: {
+              userId: altUser.id,
+              chatroomId: chatId,
+            },
+          },
+        });
       }
     } catch (err) {
       console.log(err);
@@ -92,19 +98,19 @@ export default function Chats() {
         sx={{
           p: 1,
           m: 1,
-          cursor: "pointer",
+          cursor: 'pointer',
           borderRadius: 1,
-          width: "90%",
-          "&:hover": { backgroundColor: colors.lightGray },
+          width: '90%',
+          '&:hover': { backgroundColor: colors.lightGray },
           backgroundColor: i === chatIndex && colors.lightGray,
         }}
         onClick={() => setChatIndex(i)}
       >
         <Box
           sx={{
-            display: "flex",
-            alignItems: "center",
-            width: "100%",
+            display: 'flex',
+            alignItems: 'center',
+            width: '100%',
           }}
         >
           <Avatar />
@@ -119,17 +125,17 @@ export default function Chats() {
       <Box
         sx={{
           backgroundColor: colors.darkPurpleBase,
-          width: "100%",
+          width: '100%',
           fontWeight: 500,
-          position: "relative",
+          position: 'relative',
         }}
       >
         <Box
           sx={{
             p: 2,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
           }}
         >
           <Typography sx={{ fontWeight: 500, fontSize: 15 }}>
@@ -137,16 +143,16 @@ export default function Chats() {
           </Typography>
           <ButtonBase
             sx={{
-              display: "flex",
-              justifyContent: "center",
+              display: 'flex',
+              justifyContent: 'center',
             }}
             onClick={handleOpen}
             disableRipple
           >
-            <AddIcon sx={{ color: colors.blue, height: "auto", width: 30 }} />
+            <AddIcon sx={{ color: colors.blue, height: 'auto', width: 30 }} />
           </ButtonBase>
         </Box>
-        <Box sx={{ overflowY: "auto", overflowX: "hidden" }}>
+        <Box sx={{ overflowY: 'auto', overflowX: 'hidden' }}>
           {chatrooms &&
             chatrooms.map((room, i) => {
               return <ChatButton user={room.user} key={room.id} i={i} />;
@@ -154,13 +160,13 @@ export default function Chats() {
         </Box>
         <Box
           sx={{
-            display: "flex",
-            position: "absolute",
+            display: 'flex',
+            position: 'absolute',
             bottom: 0,
             backgroundColor: colors.ddBase,
-            width: "100%",
+            width: '100%',
             p: 1,
-            alignItems: "center",
+            alignItems: 'center',
           }}
         >
           <Avatar />
@@ -173,32 +179,32 @@ export default function Chats() {
       <Modal
         open={open}
         onClose={handleClose}
-        sx={{ display: "flex", justifyContent: "center" }}
+        sx={{ display: 'flex', justifyContent: 'center' }}
       >
         <Box
           sx={{
             backgroundColor: colors.dBase,
             width: 300,
             height: 500,
-            alignSelf: "center",
+            alignSelf: 'center',
             borderRadius: 2,
           }}
         >
           <Box
             sx={{
               p: 1,
-              display: "flex",
-              alignItems: "center",
+              display: 'flex',
+              alignItems: 'center',
               backgroundColor: colors.ddBase,
-              borderTopLeftRadius: "inherit",
-              borderTopRightRadius: "inherit",
-              height: "6%",
+              borderTopLeftRadius: 'inherit',
+              borderTopRightRadius: 'inherit',
+              height: '6%',
             }}
           >
             <SearchIcon sx={{ p: 0, color: colors.blue }} />
-            <InputBase sx={{ pl: 1, color: "white" }} onChange={handleSearch} />
+            <InputBase sx={{ pl: 1, color: 'white' }} onChange={handleSearch} />
           </Box>
-          <Box sx={{ overflowY: "scroll", height: "90%" }}>
+          <Box sx={{ overflowY: 'scroll', height: '90%' }}>
             {currUsers.map((user, i) => (
               <Box
                 sx={{
@@ -206,9 +212,9 @@ export default function Chats() {
                   backgroundColor: colors.ddBase,
                   m: 1,
                   borderRadius: 1,
-                  display: "flex",
-                  alignItems: "center",
-                  position: "relative",
+                  display: 'flex',
+                  alignItems: 'center',
+                  position: 'relative',
                 }}
                 key={i}
               >
@@ -216,12 +222,12 @@ export default function Chats() {
                 <Typography>{user.username}</Typography>
                 <Button
                   sx={{
-                    position: "absolute",
+                    position: 'absolute',
                     right: 0,
-                    height: "100%",
+                    height: '100%',
                     borderRadius: 0,
-                    "&.Mui-disabled": {
-                      color: "gray",
+                    '&.Mui-disabled': {
+                      color: 'gray',
                     },
                   }}
                   disabled={disabled[i]}
