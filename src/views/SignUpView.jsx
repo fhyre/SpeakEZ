@@ -12,7 +12,7 @@ import SpeakEZLogo from '../styles/speakez-logo.png';
 import SocializingPeople from '../styles/peopleSocializing.png';
 import SloganImage from '../styles/slogan.png';
 import { useNavigate } from 'react-router-dom';
-import { signUp } from 'aws-amplify/auth';
+import { autoSignIn, signUp } from 'aws-amplify/auth';
 import { generateClient } from 'aws-amplify/api';
 import { AuthContext } from '../context/AuthProvider';
 import { createUser } from '../graphql/mutations';
@@ -50,7 +50,7 @@ export const SignUpView = () => {
           autoSignIn: true,
         },
       });
-      setError('');
+      await autoSignIn();
       const user = await client.graphql({
         query: createUser,
         variables: {
@@ -61,11 +61,10 @@ export const SignUpView = () => {
         },
       });
       localStorage.setItem('uid', user.data.createUser.id);
+      setError('');
       setIsLoading(false);
-      setTimeout(() => {
-        transfer(true);
-        navigate('/');
-      }, 1000);
+      transfer(true);
+      navigate('/');
     } catch (err) {
       setError(`*${err.message}`);
     }
