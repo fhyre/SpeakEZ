@@ -51,6 +51,7 @@ export const LoginView = () => {
       navigate('/');
     } catch (err) {
       setError(`*${err.message}`);
+      setIsLoading(false);
     }
   };
 

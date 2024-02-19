@@ -67,6 +67,7 @@ export const SignUpView = () => {
       navigate('/');
     } catch (err) {
       setError(`*${err.message}`);
+      setIsLoading(false);
     }
   };
   return (
